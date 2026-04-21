@@ -1,0 +1,9 @@
+flask
+flask-sqlalchemy
+flask-wtf
+flask-bcrypt
+flask-talisman
+flask-limiter
+python-dotenv
+flask-login
+werkzeug

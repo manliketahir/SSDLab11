@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Secure App - Home</title>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        .error, .danger { color: red; }
+        .success { color: green; }
+        table { border-collapse: collapse; width: 100%; margin-top: 20px;}
+        th, td { border: 1px solid #ddd; padding: 8px; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="{{ url_for('hello_world') }}">Home</a> | 
+        <a href="{{ url_for('upload_file') }}">Upload File</a> |
+        {% if current_user.is_authenticated %}
+            <span>Logged in as {{ current_user.email }}</span> |
+            <a href="{{ url_for('logout') }}">Logout</a>
+        {% else %}
+            <a href="{{ url_for('login') }}">Login</a>
+        {% endif %}
+    </nav>
+    
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul>
+        {% for category, message in messages %}
+          <li class="{{ category }}">{{ message }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+    <h1>Register New Person</h1>
+    
+    <form method="POST" action="">
+        {{ form.hidden_tag() }} <!-- CSRF Token for protection -->
+        
+        <p>
+            {{ form.fname.label }}<br>
+            {{ form.fname(size=32) }}
+            {% for error in form.fname.errors %}
+            <span class="error">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.lname.label }}<br>
+            {{ form.lname(size=32) }}
+            {% for error in form.lname.errors %}
+            <span class="error">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.email.label }}<br>
+            {{ form.email(size=32) }}
+            {% for error in form.email.errors %}
+            <span class="error">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.password.label }}<br>
+            {{ form.password(size=32) }}
+            {% for error in form.password.errors %}
+            <span class="error">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>{{ form.submit() }}</p>
+    </form>
+
+    <h2>All People</h2>
+    <table>
+        <tr>
+            <th>SNo</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+            <th>Password Hash</th>
+            <th>Actions</th>
+        </tr>
+        {% for person in allpeople %}
+        <tr>
+            <td>{{ person.sno }}</td>
+            <td>{{ person.fname }}</td>
+            <td>{{ person.lname }}</td>
+            <td>{{ person.email }}</td>
+            <td>{{ person.password[:20] }}...</td>
+            <td>
+                <a href="{{ url_for('update', sno=person.sno) }}">Edit</a>
+                <form action="{{ url_for('delete_user', sno=person.sno) }}" method="POST" style="display:inline;">
+                    {{ form.hidden_tag() }}
+                    <button type="submit">Delete (Admin)</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
