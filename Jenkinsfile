@@ -21,4 +21,8 @@ echo 'Deploying....'
 }
 }
 }
+  post{
+    always{ echo 'Post build reached'}
+    failure{ echo 'Post build failed'}
+  }
 }
